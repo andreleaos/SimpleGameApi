@@ -1,0 +1,7 @@
+﻿/* criação do banco de dados */
+
+CREATE DATABASE jogosDB;
+GO
+USE jogosDB;
+GO
+
