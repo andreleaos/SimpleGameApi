@@ -5,3 +5,110 @@ GO
 USE jogosDB;
 GO
 
+/* criação das tabelas */
+
+CREATE TABLE Jogos (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Nome NVARCHAR(255) NOT NULL,
+    Plataforma NVARCHAR(50) NOT NULL,
+    Genero NVARCHAR(100),
+    Preco DECIMAL(10, 2),
+    DataLancamento DATE
+);
+
+CREATE TABLE Estoque (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    IdJogo INT NOT NULL FOREIGN KEY REFERENCES Jogos(Id),
+    Quantidade INT NOT NULL CHECK (Quantidade >= 0)
+);
+
+CREATE TABLE Vendas (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    IdJogo INT NOT NULL FOREIGN KEY REFERENCES Jogos(Id),
+    DataVenda DATE NOT NULL DEFAULT GETDATE(),
+    Quantidade INT NOT NULL CHECK (Quantidade > 0),
+    Total DECIMAL(10, 2) NOT NULL
+);
+
+-- cadastro inicial
+
+INSERT INTO Jogos (Nome, Plataforma, Genero, Preco, DataLancamento)
+VALUES
+('The Last of Us', 'PS4', 'Ação/Aventura', 199.90, '2013-06-14'),
+('God of War', 'PS4', 'Ação', 249.90, '2018-04-20'),
+('Halo 5: Guardians', 'Xbox One', 'FPS', 99.90, '2015-10-27'),
+('Gears of War 4', 'Xbox One', 'Ação/Tiro', 129.90, '2016-10-11'),
+('Red Dead Redemption', 'PS3', 'Ação/Aventura', 89.90, '2010-05-18'),
+('GTA V', 'PS3', 'Mundo Aberto', 109.90, '2013-09-17'),
+('Mass Effect 2', 'Xbox 360', 'RPG', 79.90, '2010-01-26'),
+('Assassin''s Creed II', 'Xbox 360', 'Ação/Aventura', 69.90, '2009-11-17'),
+('Dark Souls', 'PS3', 'RPG', 79.90, '2011-09-22'),
+('FIFA 21', 'PS4', 'Esportes', 229.90, '2020-10-09'),
+('Forza Horizon 4', 'Xbox One', 'Corrida', 239.90, '2018-10-02'),
+('NBA 2K21', 'PS4', 'Esportes', 199.90, '2020-09-04'),
+('Minecraft', 'Xbox 360', 'Criativo/Aventura', 99.90, '2009-05-17');
+
+INSERT INTO Estoque (IdJogo, Quantidade)
+VALUES 
+(1, 50),
+(2, 30),
+(3, 20),
+(4, 15),
+(5, 40),
+(6, 25),
+(7, 35),
+(8, 10),
+(9, 5),
+(10, 45);
+
+INSERT INTO Vendas (IdJogo, Quantidade, Total, DataVenda)
+VALUES
+(1, 2, 120.00, '2024-11-01'), 
+(2, 1, 60.00, '2024-11-02'),
+(3, 3, 180.00, '2024-11-03'),
+(4, 1, 45.00, '2024-11-04'),
+(5, 4, 240.00, '2024-11-05'),
+(6, 2, 140.00, '2024-11-06'),
+(7, 1, 70.00, '2024-11-07'),
+(8, 2, 100.00, '2024-11-08'),
+(9, 1, 55.00, '2024-11-09'),
+(10, 3, 150.00, '2024-11-10');
+
+-- consultas
+
+SELECT 
+    e.IdJogo,
+    j.Nome AS NomeJogo,
+    e.Quantidade
+FROM 
+    Estoque e
+JOIN 
+    Jogos j ON e.IdJogo = j.Id
+ORDER BY 
+    j.Nome;
+
+SELECT 
+    v.Id AS IdVenda,
+    j.Nome AS NomeJogo,
+    v.Quantidade,
+    v.Total,
+    v.DataVenda
+FROM 
+    Vendas v
+JOIN 
+    Jogos j ON v.IdJogo = j.Id
+ORDER BY 
+    v.DataVenda DESC;
+
+SELECT 
+    a.Id AS IdAluguel,
+    j.Nome AS NomeJogo,
+    a.DataAluguel,
+    a.DataDevolucao,
+    a.Preco
+FROM 
+    Aluguel a
+JOIN 
+    Jogos j ON a.IdJogo = j.Id
+ORDER BY 
+    a.DataAluguel DESC;
