@@ -17,7 +17,7 @@ public static class Startup
         var connStr = configuration.GetConnectionString("JogosDB") ??
             throw new ArgumentNullException("Connection String não localizada");
 
-        services.AddDbContext<JogoDbContext>(options =>
+        services.AddDbContext<JogoDbContext>(options => 
         options.UseSqlServer(connStr));
     }
 
