@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using SimpleGameApi.Models.Domain.Contracts.Repositories;
 using SimpleGameApi.Models.Infrastructure.Data.Contexts;
+using SimpleGameApi.Models.Infrastructure.Data.Repositories;
 
 namespace SimpleGameApi.Models.Configuration;
 
@@ -31,6 +33,8 @@ public static class Startup
     private static void ConfigureRepositories(IServiceCollection services)
     {
         // Incluir dependencias de repositorios
+
+        services.AddScoped<IJogoRepository, JogoRepository>();
     }
 
     private static void ConfigureServices(IServiceCollection services)
