@@ -1,8 +1,10 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using SimpleGameApi.Models.Domain.Contracts.Repositories;
+using SimpleGameApi.Models.Domain.Contracts.Services;
 using SimpleGameApi.Models.Infrastructure.Data.Contexts;
 using SimpleGameApi.Models.Infrastructure.Data.Repositories;
+using SimpleGameApi.Models.Services;
 
 namespace SimpleGameApi.Models.Configuration;
 
@@ -40,6 +42,8 @@ public static class Startup
     private static void ConfigureServices(IServiceCollection services)
     {
         // Incluir dependencias de servicos
+
+        services.AddScoped<IJogoService, JogoService>();
     }
 
 
