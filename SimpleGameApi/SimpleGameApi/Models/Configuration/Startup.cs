@@ -45,6 +45,7 @@ public static class Startup
         // Incluir dependencias de servicos
 
         services.AddScoped<IJogoService, JogoService>();
+        services.AddScoped<IEstoqueService, EstoqueService>();
     }
 
 
