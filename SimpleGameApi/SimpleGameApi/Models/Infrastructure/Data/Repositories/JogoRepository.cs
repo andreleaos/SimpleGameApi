@@ -35,6 +35,7 @@ public class JogoRepository : IJogoRepository
     public Jogo Get(int id)
     {
         var jogo = _context.Jogos
+            .AsNoTracking()
             .FirstOrDefault(p => p.Id.Equals(id));
 
         return jogo;
@@ -43,6 +44,7 @@ public class JogoRepository : IJogoRepository
     public List<Jogo> GetAll()
     {
         var jogos = _context.Jogos
+            .AsNoTracking()
             .OrderBy(p => p.Nome)
             .ToList();
 
@@ -54,6 +56,9 @@ public class JogoRepository : IJogoRepository
         var jogoPesquisado = Get(entity.Id);
         if (jogoPesquisado != null)
         {
+            _context.Entry(jogoPesquisado).State = EntityState.Detached;
+
+            //_context.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
             _context.SaveChanges();
             return true;
