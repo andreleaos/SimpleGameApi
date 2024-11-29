@@ -11,6 +11,12 @@ public class JogoDbContext : DbContext
 
     }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.EnableSensitiveDataLogging();
+        base.OnConfiguring(optionsBuilder);
+    }
+
     public DbSet<Jogo> Jogos { get; set; }  
     public DbSet<Estoque> Estoque { get; set; }
 }
