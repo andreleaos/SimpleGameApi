@@ -8,4 +8,5 @@ public static class ConstantParameters
     public static string PROC_LISTAGEM_VENDAS = "SP_VENDAS_LISTAR";
     public static string PROC_PESQUISA_VENDAS = "SP_VENDAS_PESQUISAR_POR_ID";
 
+    public static string PROC_CADASTRO_ALUGUEL = "SP_ALUGUEL_CADASTRAR";
 }

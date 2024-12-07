@@ -1,20 +1,33 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
+using SimpleGameApi.Models.Configuration;
 using SimpleGameApi.Models.Domain.Contracts.Repositories;
 using SimpleGameApi.Models.Domain.Entities;
 using SimpleGameApi.Models.Domain.Enums;
 using SimpleGameApi.Models.Infrastructure.Data.Contexts;
 using SimpleGameApi.Models.Infrastructure.Data.Queries;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SimpleGameApi.Models.Infrastructure.Data.Repositories;
 
 public class AluguelRepository : IAluguelRepository
 {
     private readonly ConnectionManager _connectionManager;
+    private readonly bool _enableStoredProcedure;
 
     public AluguelRepository(IConfiguration configuration)
     {
         _connectionManager = new ConnectionManager(configuration);
+
+        var procParameter = configuration
+            .GetSection("Flags")?
+            .GetSection("Habilitar_Uso_Stored_Procedure")?.Value;
+
+        if (!procParameter.IsNullOrEmpty())
+            _enableStoredProcedure = Convert.ToBoolean(procParameter);
+
     }
 
     public void Add(Aluguel entity)
@@ -22,12 +35,29 @@ public class AluguelRepository : IAluguelRepository
         if (entity == null)
             throw new ArgumentNullException("Dados inválidos");
 
-        var query = SqlManager.GetSql(SqlQueryEnum.CADASTRAR_ALUGUEL);
-
         using (var connection = _connectionManager.GetConnection() as SqlConnection)
         {
-            var id = connection.QuerySingle<int>(query, entity);
-            entity.Id = id;
+            if (_enableStoredProcedure)
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@IdJogo", entity.IdJogo, DbType.Int32);
+                parameters.Add("@DataAluguel", entity.DataAluguel, DbType.DateTime);
+                parameters.Add("@DataDevolucaO", entity.DataDevolucao, DbType.DateTime);
+                parameters.Add("@Preco", entity.Preco, DbType.Decimal);
+
+                var id = connection
+                    .QuerySingle<int>(ConstantParameters.PROC_CADASTRO_ALUGUEL, 
+                                      parameters,
+                                      commandType: CommandType.StoredProcedure);
+                entity.Id = id;
+
+            }
+            else
+            {
+                var query = SqlManager.GetSql(SqlQueryEnum.CADASTRAR_ALUGUEL);
+                var id = connection.QuerySingle<int>(query, entity);
+                entity.Id = id;
+            }
         }
     }
 

@@ -49,3 +49,16 @@ AS
 BEGIN
     SELECT Id, IdJogo, Quantidade, Total, DataVenda FROM Vendas;
 END;
+
+
+CREATE PROCEDURE SP_ALUGUEL_CADASTRAR 
+	@IdJogo int, 
+	@DataAluguel DATETIME, 
+	@DataDevolucaO DATETIME, 
+	@Preco DECIMAL(10,2)
+AS
+BEGIN
+	INSERT INTO Aluguel (IdJogo, DataAluguel, DataDevolucao, Preco) 
+	VALUES (@IdJogo, @DataAluguel, @DataDevolucao, @Preco);
+	SELECT CAST(SCOPE_IDENTITY() AS INT);
+END;
