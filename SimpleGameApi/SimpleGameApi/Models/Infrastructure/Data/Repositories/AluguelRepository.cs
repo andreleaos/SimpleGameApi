@@ -12,9 +12,9 @@ public class AluguelRepository : IAluguelRepository
 {
     private readonly ConnectionManager _connectionManager;
 
-    public AluguelRepository(ConnectionManager connectionManager)
+    public AluguelRepository(IConfiguration configuration)
     {
-        _connectionManager = connectionManager;
+        _connectionManager = new ConnectionManager(configuration);
     }
 
     public void Add(Aluguel entity)
