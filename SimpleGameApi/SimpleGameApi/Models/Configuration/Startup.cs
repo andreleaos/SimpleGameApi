@@ -35,7 +35,6 @@ public static class Startup
     private static void ConfigureRepositories(IServiceCollection services)
     {
         // Incluir dependencias de repositorios
-
         services.AddScoped<IJogoRepository, JogoRepository>();
         services.AddScoped<IEstoqueRepository, EstoqueRepository>();
         services.AddScoped<IVendaRepository, VendaRepository>();
@@ -45,7 +44,6 @@ public static class Startup
     private static void ConfigureServices(IServiceCollection services)
     {
         // Incluir dependencias de servicos
-
         services.AddScoped<IJogoService, JogoService>();
         services.AddScoped<IEstoqueService, EstoqueService>();
         services.AddScoped<IVendaService, VendaService>();
