@@ -11,7 +11,7 @@ public static class SqlManager
         switch (queryEnum)
         {
             case SqlQueryEnum.CADASTRAR_VENDAS:
-                sql = "INSERT INTO Vendas (IdJogo, Quantidade, Total) VALUES (@IdJogo, @Quantidade, @Total)";
+                sql = "INSERT INTO Vendas (IdJogo, Quantidade, Total, DataVenda) VALUES (@IdJogo, @Quantidade, @Total, @DataVenda)";
                 break;
 
             case SqlQueryEnum.ATUALIZAR_VENDAS:
