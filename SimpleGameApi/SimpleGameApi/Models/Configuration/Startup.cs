@@ -39,6 +39,7 @@ public static class Startup
         services.AddScoped<IJogoRepository, JogoRepository>();
         services.AddScoped<IEstoqueRepository, EstoqueRepository>();
         services.AddScoped<IVendaRepository, VendaRepository>();
+        services.AddScoped<IAluguelRepository, AluguelRepository>();
     }
 
     private static void ConfigureServices(IServiceCollection services)
