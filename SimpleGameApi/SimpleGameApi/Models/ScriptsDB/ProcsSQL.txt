@@ -1,0 +1,51 @@
+﻿-- Stored Procedure para Inserção
+CREATE PROCEDURE SP_VENDAS_CADASTRAR
+    @IdJogo INT,
+    @DataVenda DATETIME,
+    @Quantidade INT,
+    @Total DECIMAL(10,2)
+AS
+BEGIN
+    INSERT INTO Vendas (IdJogo, DataVenda, Quantidade, Total)
+    VALUES (@IdJogo, @DataVenda, @Quantidade, @Total);
+END;
+
+-- Stored Procedure para Atualização
+CREATE PROCEDURE SP_VENDAS_ATUALIZAR
+    @Id INT,
+    @IdJogo INT,
+    @DataVenda DATETIME,
+    @Quantidade INT,
+    @Total DECIMAL(10,2)
+
+AS
+BEGIN
+    UPDATE Vendas
+    SET IdJogo = @IdJogo, DataVenda = @DataVenda, Quantidade = @Quantidade, 
+    Total = @Total
+    WHERE Id = @Id;
+END;
+
+-- Stored Procedure para Exclusão
+CREATE PROCEDURE SP_VENDAS_EXCLUIR
+    @Id INT
+AS
+BEGIN
+    DELETE FROM Vendas WHERE Id = @Id;
+END;
+
+-- Stored Procedure para Pesquisa por ID
+CREATE PROCEDURE SP_VENDAS_PESQUISAR_POR_ID
+    @Id INT
+AS
+BEGIN
+    SELECT Id, IdJogo, Quantidade, Total, DataVenda 
+    FROM Vendas WHERE Id = @Id;
+END;
+
+-- Stored Procedure para Listagem
+CREATE PROCEDURE SP_VENDAS_LISTAR
+AS
+BEGIN
+    SELECT Id, IdJogo, Quantidade, Total, DataVenda FROM Vendas;
+END;

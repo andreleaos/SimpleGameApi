@@ -1,5 +1,7 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
+using SimpleGameApi.Models.Configuration;
 using SimpleGameApi.Models.Domain.Contracts.Repositories;
 using SimpleGameApi.Models.Domain.Entities;
 using SimpleGameApi.Models.Domain.Enums;
@@ -10,10 +12,18 @@ namespace SimpleGameApi.Models.Infrastructure.Data.Repositories;
 public class VendaRepository : IVendaRepository
 {
     private readonly ConnectionManager _connectionManager;
+    private readonly bool _enableStoredProcedure;
 
     public VendaRepository(IConfiguration configuration)
     {
         _connectionManager = new ConnectionManager(configuration);
+
+        var procParameter = configuration
+            .GetSection("Flags")?
+            .GetSection("Habilitar_Uso_Stored_Procedure")?.Value;
+
+        if (!procParameter.IsNullOrEmpty())
+            _enableStoredProcedure = Convert.ToBoolean(procParameter);
     }
 
     public void Add(Venda entity)
@@ -23,6 +33,12 @@ public class VendaRepository : IVendaRepository
             var query = SqlManager.GetSql(SqlQueryEnum.CADASTRAR_VENDAS);
             using (var command = new SqlCommand(query, connection))
             {
+                if (_enableStoredProcedure)
+                {
+                    command.CommandText = ConstantParameters.PROC_CADASTRO_VENDAS;
+                    command.CommandType = CommandType.StoredProcedure;
+                }
+
                 command.Parameters.AddWithValue("@IdJogo", entity.IdJogo);
                 command.Parameters.AddWithValue("@Quantidade", entity.Quantidade);
                 command.Parameters.AddWithValue("@Total", entity.Total);
@@ -43,6 +59,12 @@ public class VendaRepository : IVendaRepository
             var query = SqlManager.GetSql(SqlQueryEnum.EXCLUIR_VENDAS);
             using (var command = new SqlCommand(query, connection))
             {
+                if (_enableStoredProcedure)
+                {
+                    command.CommandText = ConstantParameters.PROC_EXCLUSAO_VENDAS;
+                    command.CommandType = CommandType.StoredProcedure;
+                }
+
                 command.Parameters.AddWithValue("@Id", id);
 
                 if (connection.State != ConnectionState.Open)
@@ -65,6 +87,12 @@ public class VendaRepository : IVendaRepository
         {
             using (var command = new SqlCommand(query, connection))
             {
+                if (_enableStoredProcedure)
+                {
+                    command.CommandText = ConstantParameters.PROC_PESQUISA_VENDAS;
+                    command.CommandType = CommandType.StoredProcedure;
+                }
+
                 command.Parameters.AddWithValue("@Id", id);
 
                 if (connection.State != ConnectionState.Open)
@@ -101,6 +129,12 @@ public class VendaRepository : IVendaRepository
             var query = SqlManager.GetSql(SqlQueryEnum.LISTAR_VENDAS);
             var command = new SqlCommand(query, connection);
 
+            if (_enableStoredProcedure)
+            {
+                command.CommandText = ConstantParameters.PROC_LISTAGEM_VENDAS;
+                command.CommandType = CommandType.StoredProcedure;
+            }
+
             var reader = command.ExecuteReader();
 
             while (reader.Read())
@@ -126,6 +160,12 @@ public class VendaRepository : IVendaRepository
             var query = SqlManager.GetSql(SqlQueryEnum.ATUALIZAR_VENDAS);
             using (var command = new SqlCommand(query, connection))
             {
+                if (_enableStoredProcedure)
+                {
+                    command.CommandText = ConstantParameters.PROC_ATUALIZACAO_VENDAS;
+                    command.CommandType = CommandType.StoredProcedure;
+                }
+
                 command.Parameters.AddWithValue("@Id", venda.Id);
                 command.Parameters.AddWithValue("@IdJogo", venda.IdJogo);
                 command.Parameters.AddWithValue("@Quantidade", venda.Quantidade);
